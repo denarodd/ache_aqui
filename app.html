@@ -1,0 +1,1450 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#ff5a36">
+    <title>Ache Aqui — Achados e Perdidos</title>
+    <style>
+      :root {
+        --bg: #faf6f0;
+        --surface: #fff;
+        --ink: #1d1a16;
+        --mut: #6f675d;
+        --line: #ece5da;
+        --acc: #ff5a36;
+        --acc-d: #e24a28;
+        --acc-soft: #ffe9e2;
+        --ok: #14804a;
+        --ok-soft: #dff5e8;
+        --bad: #c2331f;
+        --bad-soft: #fde5e1;
+        --warn: #a85d00;
+        --warn-soft: #fff0d6;
+        --navy: #16213a;
+        --sh:
+          0 1px 2px rgba(40, 25, 10, 0.06), 0 8px 24px rgba(40, 25, 10, 0.07);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #14120f;
+          --surface: #1e1b17;
+          --ink: #f4efe8;
+          --mut: #a39a8e;
+          --line: #2f2a24;
+          --acc: #ff6e4d;
+          --acc-d: #ff8165;
+          --acc-soft: #3a211b;
+          --ok: #5fdc97;
+          --ok-soft: #14301f;
+          --bad: #ff8a76;
+          --bad-soft: #3a1c17;
+          --warn: #ffc15c;
+          --warn-soft: #352a12;
+          --navy: #0d1322;
+          --sh: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.35);
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font:
+          16px/1.5 ui-sans-serif,
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          Roboto,
+          sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      button,
+      input,
+      select,
+      textarea {
+        font: inherit;
+        color: inherit;
+      }
+      button {
+        cursor: pointer;
+        border: 0;
+        background: none;
+      }
+      .wrap {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      /* topo */
+      .top {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        background: color-mix(in srgb, var(--bg) 88%, transparent);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--line);
+      }
+      .top .wrap {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        height: 64px;
+      }
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        font-weight: 800;
+        font-size: 19px;
+        letter-spacing: -0.02em;
+      }
+      .logo i {
+        width: 34px;
+        height: 34px;
+        border-radius: 11px;
+        background: var(--acc);
+        display: grid;
+        place-items: center;
+        font-style: normal;
+        font-size: 18px;
+        box-shadow: 0 4px 12px rgba(255, 90, 54, 0.35);
+      }
+      nav {
+        display: flex;
+        gap: 2px;
+        margin-left: 12px;
+      }
+      nav button {
+        padding: 8px 14px;
+        border-radius: 999px;
+        font-weight: 600;
+        font-size: 14px;
+        color: var(--mut);
+      }
+      nav button:hover {
+        background: var(--line);
+      }
+      nav button.on {
+        background: var(--ink);
+        color: var(--bg);
+      }
+      .sp {
+        flex: 1;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        padding: 10px 18px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 15px;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        transition: 0.15s;
+      }
+      .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: var(--sh);
+      }
+      .btn.pri {
+        background: var(--acc);
+        border-color: var(--acc);
+        color: #fff;
+      }
+      .btn.pri:hover {
+        background: var(--acc-d);
+      }
+      .btn.sm {
+        padding: 7px 13px;
+        font-size: 13px;
+        border-radius: 10px;
+      }
+      .btn.ok {
+        background: var(--ok);
+        border-color: var(--ok);
+        color: #fff;
+      }
+      .btn.danger {
+        color: var(--bad);
+      }
+      .btn:disabled {
+        opacity: 0.55;
+        pointer-events: none;
+      }
+
+      /* hero */
+      .hero {
+        background: var(--navy);
+        color: #fff;
+        position: relative;
+        overflow: hidden;
+      }
+      .hero:before {
+        content: "";
+        position: absolute;
+        inset: auto -80px -140px auto;
+        width: 420px;
+        height: 420px;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(255, 90, 54, 0.55),
+          transparent 65%
+        );
+      }
+      .hero:after {
+        content: "";
+        position: absolute;
+        left: -100px;
+        top: -120px;
+        width: 340px;
+        height: 340px;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(110, 140, 255, 0.3),
+          transparent 65%
+        );
+      }
+      .hero .wrap {
+        position: relative;
+        z-index: 1;
+        padding-top: 46px;
+        padding-bottom: 40px;
+      }
+      .hero h1 {
+        margin: 0 0 8px;
+        font-size: clamp(30px, 5.4vw, 50px);
+        line-height: 1.05;
+        letter-spacing: -0.035em;
+        max-width: 640px;
+      }
+      .hero h1 em {
+        font-style: normal;
+        color: #ff8a6b;
+      }
+      .hero p {
+        margin: 0 0 24px;
+        color: #b9c3dc;
+        max-width: 520px;
+        font-size: 17px;
+      }
+      .search {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: #fff;
+        color: #1d1a16;
+        border-radius: 16px;
+        padding: 6px 6px 6px 18px;
+        max-width: 620px;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.28);
+      }
+      .search svg {
+        flex: none;
+        opacity: 0.5;
+      }
+      .search input {
+        flex: 1;
+        border: 0;
+        outline: 0;
+        background: none;
+        padding: 12px 0;
+        font-size: 16px;
+        min-width: 0;
+        color: #1d1a16;
+      }
+      .stats {
+        display: flex;
+        gap: 26px;
+        margin-top: 26px;
+        flex-wrap: wrap;
+      }
+      .stat b {
+        display: block;
+        font-size: 28px;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+      }
+      .stat span {
+        font-size: 13px;
+        color: #9fabc9;
+      }
+
+      /* filtros */
+      .filters {
+        padding: 22px 0 6px;
+      }
+      .chips {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        padding-bottom: 6px;
+        scrollbar-width: none;
+      }
+      .chips::-webkit-scrollbar {
+        display: none;
+      }
+      .chip {
+        flex: none;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        padding: 8px 14px;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        background: var(--surface);
+        font-weight: 600;
+        font-size: 14px;
+        transition: 0.15s;
+      }
+      .chip small {
+        color: var(--mut);
+        font-weight: 600;
+      }
+      .chip:hover {
+        border-color: var(--acc);
+      }
+      .chip.on {
+        background: var(--acc);
+        border-color: var(--acc);
+        color: #fff;
+      }
+      .chip.on small {
+        color: #ffe0d8;
+      }
+      .seg {
+        display: inline-flex;
+        max-width: 100%;
+        overflow-x: auto;
+        scrollbar-width: none;
+        background: var(--line);
+        border-radius: 12px;
+        padding: 3px;
+        margin-top: 10px;
+      }
+      .seg::-webkit-scrollbar {
+        display: none;
+      }
+      .seg button {
+        padding: 7px 14px;
+        border-radius: 9px;
+        font-weight: 600;
+        font-size: 13px;
+        color: var(--mut);
+        white-space: nowrap;
+      }
+      .seg button.on {
+        background: var(--surface);
+        color: var(--ink);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+      }
+      .count {
+        color: var(--mut);
+        font-size: 14px;
+        margin: 14px 0 14px;
+      }
+
+      /* cards */
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 18px;
+        padding-bottom: 60px;
+      }
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        cursor: pointer;
+        transition: 0.18s;
+        animation: up 0.35s both;
+      }
+      .card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--sh);
+      }
+      @keyframes up {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      .vis {
+        position: relative;
+        height: 150px;
+        display: grid;
+        place-items: center;
+        font-size: 58px;
+        overflow: hidden;
+      }
+      .vis img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .badge {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        z-index: 2;
+        font-size: 12px;
+        font-weight: 800;
+        padding: 4px 10px;
+        border-radius: 999px;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+        backdrop-filter: blur(6px);
+      }
+      .badge.achado {
+        background: var(--ok-soft);
+        color: var(--ok);
+      }
+      .badge.perdido {
+        background: var(--bad-soft);
+        color: var(--bad);
+      }
+      .badge.devolvido {
+        background: var(--line);
+        color: var(--mut);
+      }
+      .badge.pendente {
+        background: var(--warn-soft);
+        color: var(--warn);
+      }
+      .badge.aprovada {
+        background: var(--ok-soft);
+        color: var(--ok);
+      }
+      .badge.recusada {
+        background: var(--bad-soft);
+        color: var(--bad);
+      }
+      .badge.static {
+        position: static;
+        display: inline-block;
+      }
+      .cbody {
+        padding: 15px 16px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        flex: 1;
+      }
+      .cbody h3 {
+        margin: 0;
+        font-size: 17px;
+        letter-spacing: -0.01em;
+        line-height: 1.25;
+      }
+      .cbody p {
+        margin: 0;
+        color: var(--mut);
+        font-size: 14px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      .meta {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        margin-top: auto;
+        padding-top: 8px;
+        font-size: 13px;
+        color: var(--mut);
+      }
+      .empty,
+      .err {
+        grid-column: 1/-1;
+        text-align: center;
+        padding: 64px 20px;
+        color: var(--mut);
+      }
+      .empty .big {
+        font-size: 54px;
+      }
+      .empty h3,
+      .err h3 {
+        margin: 8px 0 4px;
+        color: var(--ink);
+      }
+      .skel {
+        height: 300px;
+        border-radius: 20px;
+        background: linear-gradient(
+          100deg,
+          var(--line) 30%,
+          var(--surface) 50%,
+          var(--line) 70%
+        );
+        background-size: 300% 100%;
+        animation: sh 1.2s infinite;
+      }
+      @keyframes sh {
+        to {
+          background-position: -150% 0;
+        }
+      }
+
+      /* listas (solicitações) */
+      .page {
+        padding: 34px 0 70px;
+      }
+      .page h2 {
+        margin: 0 0 4px;
+        font-size: 28px;
+        letter-spacing: -0.03em;
+      }
+      .page .sub {
+        color: var(--mut);
+        margin: 0 0 22px;
+      }
+      .list {
+        display: grid;
+        gap: 12px;
+      }
+      .row {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 16px 18px;
+        display: grid;
+        gap: 8px;
+      }
+      .row .h {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .row .h b {
+        font-size: 16px;
+      }
+      .row .msg {
+        background: var(--bg);
+        border-radius: 12px;
+        padding: 10px 12px;
+        font-size: 14px;
+        color: var(--mut);
+      }
+      .row .acts {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .who {
+        font-size: 13px;
+        color: var(--mut);
+      }
+
+      /* dialogs */
+      dialog {
+        border: 0;
+        border-radius: 24px;
+        padding: 0;
+        width: min(560px, 94vw);
+        max-height: 92vh;
+        background: var(--surface);
+        color: var(--ink);
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+      }
+      dialog::backdrop {
+        background: rgba(10, 8, 5, 0.6);
+        backdrop-filter: blur(3px);
+      }
+      dialog[open] {
+        animation: pop 0.22s;
+      }
+      @keyframes pop {
+        from {
+          opacity: 0;
+          transform: translateY(16px) scale(0.98);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      .dhead {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px 24px 0;
+      }
+      .dhead h2 {
+        margin: 0;
+        font-size: 22px;
+        letter-spacing: -0.02em;
+      }
+      .x {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: var(--line);
+        font-size: 18px;
+        line-height: 1;
+      }
+      .dbody {
+        padding: 16px 24px 24px;
+        display: grid;
+        gap: 14px;
+        overflow: auto;
+        max-height: calc(92vh - 70px);
+      }
+      .detail .vis {
+        height: 200px;
+        border-radius: 18px;
+        font-size: 80px;
+      }
+      .facts {
+        display: grid;
+        gap: 8px;
+        font-size: 15px;
+      }
+      .facts div {
+        display: flex;
+        gap: 10px;
+      }
+      .facts span {
+        width: 22px;
+        text-align: center;
+      }
+      label {
+        display: grid;
+        gap: 5px;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--mut);
+      }
+      input,
+      select,
+      textarea {
+        padding: 12px 14px;
+        border: 1.5px solid var(--line);
+        border-radius: 12px;
+        background: var(--bg);
+        outline: 0;
+        font-weight: 500;
+        color: var(--ink);
+        width: 100%;
+      }
+      input:focus,
+      select:focus,
+      textarea:focus {
+        border-color: var(--acc);
+        background: var(--surface);
+      }
+      .two {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      @media (max-width: 520px) {
+        .two {
+          grid-template-columns: 1fr;
+        }
+        nav {
+          display: none;
+        }
+        .hero .wrap {
+          padding-top: 32px;
+        }
+      }
+      .kind {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .kind button {
+        padding: 14px;
+        border-radius: 14px;
+        border: 2px solid var(--line);
+        font-weight: 800;
+        text-align: left;
+        line-height: 1.3;
+      }
+      .kind button small {
+        display: block;
+        font-weight: 500;
+        color: var(--mut);
+      }
+      .kind button.on {
+        border-color: var(--acc);
+        background: var(--acc-soft);
+      }
+      .catpick {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+      }
+      .catpick button {
+        padding: 7px 12px;
+        border-radius: 999px;
+        border: 1.5px solid var(--line);
+        font-size: 14px;
+        font-weight: 600;
+      }
+      .catpick button.on {
+        border-color: var(--acc);
+        background: var(--acc-soft);
+        color: var(--acc-d);
+      }
+      .hint {
+        font-size: 13px;
+        color: var(--mut);
+        margin: 0;
+      }
+
+      /* tab bar mobile */
+      .tabbar {
+        display: none;
+      }
+      @media (max-width: 760px) {
+        .tabbar {
+          display: flex;
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          z-index: 25;
+          background: var(--surface);
+          border-top: 1px solid var(--line);
+          padding: 6px 6px calc(6px + env(safe-area-inset-bottom));
+        }
+        .tabbar button {
+          flex: 1;
+          display: grid;
+          justify-items: center;
+          gap: 1px;
+          padding: 6px;
+          font-size: 11px;
+          font-weight: 700;
+          color: var(--mut);
+          border-radius: 12px;
+        }
+        .tabbar button span {
+          font-size: 20px;
+        }
+        .tabbar button.on {
+          color: var(--acc);
+        }
+        body {
+          padding-bottom: 70px;
+        }
+        .top .btn.pri {
+          padding: 9px 14px;
+        }
+      }
+      #toast {
+        position: fixed;
+        left: 50%;
+        bottom: 90px;
+        transform: translate(-50%, 20px);
+        background: var(--ink);
+        color: var(--bg);
+        padding: 12px 20px;
+        border-radius: 14px;
+        font-weight: 600;
+        font-size: 14px;
+        opacity: 0;
+        pointer-events: none;
+        transition: 0.25s;
+        z-index: 60;
+        max-width: 90vw;
+      }
+      #toast.show {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+    </style>
+  </head>
+  <body>
+    <header class="top">
+      <div class="wrap">
+        <div class="logo"><i>🔎</i>Ache Aqui</div>
+        <nav id="nav">
+          <button data-tab="explorar" class="on">Explorar</button>
+          <button data-tab="minhas">Minhas solicitações</button>
+          <button data-tab="painel">Painel da equipe</button>
+        </nav>
+        <div class="sp"></div>
+        <button class="btn pri" id="btnNovo">＋ Registrar</button>
+      </div>
+    </header>
+
+    <main>
+      <section id="tab-explorar">
+        <div class="hero">
+          <div class="wrap">
+            <h1>Perdeu algo? <em>Vamos achar.</em></h1>
+            <p>
+              Veja o que foi encontrado, registre o que você perdeu e peça a
+              devolução em poucos cliques.
+            </p>
+            <div class="search">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.4"
+                stroke-linecap="round"
+              >
+                <circle cx="11" cy="11" r="7">
+                <path d="m20 20-3.5-3.5">
+              </svg>
+              <input
+                id="q"
+                placeholder="Buscar: mochila, chaves, fone, sala 12…"
+                autocomplete="off"
+             >
+            </div>
+            <div class="stats" id="stats"></div>
+          </div>
+        </div>
+        <div class="wrap">
+          <div class="filters">
+            <div class="chips" id="chips"></div>
+            <div class="seg" id="seg"></div>
+          </div>
+          <div class="count" id="count"></div>
+          <div class="grid" id="grid"></div>
+        </div>
+      </section>
+
+      <section id="tab-minhas" hidden>
+        <div class="wrap page">
+          <h2>Minhas solicitações</h2>
+          <p class="sub">
+            Acompanhe os pedidos de devolução feitos neste aparelho.
+          </p>
+          <div class="list" id="minhas"></div>
+        </div>
+      </section>
+
+      <section id="tab-painel" hidden>
+        <div class="wrap page">
+          <h2>Painel da equipe</h2>
+          <p class="sub">
+            Analise os pedidos de devolução. Aprovar marca o objeto como
+            devolvido.
+          </p>
+          <div class="seg" id="segP" style="margin: 0 0 16px"></div>
+          <div class="list" id="painel"></div>
+        </div>
+      </section>
+    </main>
+
+    <div class="tabbar" id="tabbar">
+      <button data-tab="explorar" class="on"><span>🏠</span>Explorar</button>
+      <button id="tbNovo"><span>➕</span>Registrar</button>
+      <button data-tab="minhas"><span>📨</span>Pedidos</button>
+      <button data-tab="painel"><span>🛠️</span>Equipe</button>
+    </div>
+
+    <dialog id="dDet">
+      <div class="dhead">
+        <h2 id="dDetT">Objeto</h2>
+        <button class="x" data-close>✕</button>
+      </div>
+      <div class="dbody detail" id="dDetB"></div>
+    </dialog>
+
+    <dialog id="dSol">
+      <div class="dhead">
+        <h2 id="dSolT">Pedir devolução</h2>
+        <button class="x" data-close>✕</button>
+      </div>
+      <form class="dbody" id="fSol">
+        <p class="hint" id="solInfo"></p>
+        <label
+          >Seu nome<input
+            name="solicitante"
+            required
+            maxlength="120"
+            autocomplete="name"
+       ></label>
+        <label
+          >E-mail ou telefone<input
+            name="contato"
+            required
+            maxlength="200"
+            autocomplete="email"
+       ></label>
+        <label id="solMsgL"
+          >Como comprovar que é seu?<textarea
+            name="mensagem"
+            rows="3"
+            required
+            maxlength="1000"
+            placeholder="Descreva marcas, conteúdo, detalhes que só o dono saberia…"
+          ></textarea>
+        </label>
+        <button class="btn pri" id="solGo">Enviar pedido</button>
+      </form>
+    </dialog>
+
+    <dialog id="dNovo">
+      <div class="dhead">
+        <h2>Registrar objeto</h2>
+        <button class="x" data-close>✕</button>
+      </div>
+      <form class="dbody" id="fNovo">
+        <div class="kind" id="kind">
+          <button type="button" data-k="achado" class="on">
+            🙌 Eu achei<small>Encontrei um objeto</small>
+          </button>
+          <button type="button" data-k="perdido">
+            😢 Eu perdi<small>Estou procurando</small>
+          </button>
+        </div>
+        <label
+          >O que é?<input
+            name="nome"
+            required
+            maxlength="80"
+            placeholder="Ex.: Garrafa azul"
+       ></label>
+        <label
+          >Categoria
+          <div class="catpick" id="catpick"></div
+        ></label>
+        <label
+          >Descrição<textarea
+            name="descricao"
+            rows="2"
+            maxlength="1000"
+            placeholder="Cor, marca, detalhes que ajudam a identificar"
+          ></textarea>
+        </label>
+        <div class="two">
+          <label
+            >Onde?<input
+              name="local"
+              required
+              maxlength="200"
+              placeholder="Ex.: Biblioteca"
+         ></label>
+          <label
+            >Quando?<input type="datetime-local" name="data" required
+         ></label>
+        </div>
+        <label
+          >Link da foto (opcional)<input
+            name="foto"
+            type="url"
+            maxlength="500"
+            placeholder="https://…"
+       ></label>
+        <label
+          >Seu contato (opcional)<input
+            name="contato"
+            maxlength="200"
+            placeholder="E-mail ou telefone"
+       ></label>
+        <button class="btn pri" id="novoGo">Publicar</button>
+      </form>
+    </dialog>
+
+    <div id="toast"></div>
+
+    <script>
+      /* ===== Configuração ===== */
+      // Servido pela API → "/api". Aberto como arquivo → localhost:8080.
+      // Para apontar para outra API: app.html?api=https://minha-api.com/api
+      const API =
+        new URLSearchParams(location.search).get("api") ||
+        (location.protocol === "file:" ? "http://localhost:8080/api" : "/api");
+
+      const CATS = {
+        documentos: { l: "Documentos", i: "🪪", g: ["#7c8cff", "#a9b7ff"] },
+        eletronicos: { l: "Eletrônicos", i: "🎧", g: ["#2fb8c9", "#7fe0e8"] },
+        roupas: { l: "Roupas", i: "🧥", g: ["#ff8a5c", "#ffc09b"] },
+        acessorios: { l: "Acessórios", i: "👓", g: ["#c06cf0", "#e2b0ff"] },
+        chaves: { l: "Chaves", i: "🔑", g: ["#f2b632", "#ffdc82"] },
+        bolsas_mochilas: {
+          l: "Bolsas e mochilas",
+          i: "🎒",
+          g: ["#4fbf7a", "#9be8b6"],
+        },
+        outros: { l: "Outros", i: "📦", g: ["#8d98ad", "#c3cadb"] },
+      };
+      const ST = {
+        achado: "Achado",
+        perdido: "Perdido",
+        devolvido: "Devolvido",
+        pendente: "Pendente",
+        aprovada: "Aprovada",
+        recusada: "Recusada",
+      };
+
+      /* ===== Utilidades ===== */
+      const $ = (s) => document.querySelector(s),
+        $$ = (s) => [...document.querySelectorAll(s)];
+      const esc = (s) =>
+        String(s ?? "").replace(
+          /[&<>"']/g,
+          (c) =>
+            ({
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              '"': "&quot;",
+              "'": "&#39;",
+            })[c],
+        );
+      const cat = (c) =>
+        CATS[c] || { l: c, i: "📦", g: ["#8d98ad", "#c3cadb"] };
+      const store = {
+        get(k, d) {
+          try {
+            return JSON.parse(localStorage.getItem(k)) ?? d;
+          } catch {
+            return d;
+          }
+        },
+        set(k, v) {
+          try {
+            localStorage.setItem(k, JSON.stringify(v));
+          } catch {}
+        },
+      };
+      let tt;
+      function toast(m) {
+        const t = $("#toast");
+        t.textContent = m;
+        t.classList.add("show");
+        clearTimeout(tt);
+        tt = setTimeout(() => t.classList.remove("show"), 3000);
+      }
+      function quando(d) {
+        const x = new Date(d);
+        if (isNaN(x)) return esc(d);
+        const m = Math.round((x - Date.now()) / 60000),
+          a = Math.abs(m);
+        const rt = new Intl.RelativeTimeFormat("pt-BR", { numeric: "auto" });
+        if (a < 60) return rt.format(m, "minute");
+        if (a < 1440) return rt.format(Math.round(m / 60), "hour");
+        if (a < 43200) return rt.format(Math.round(m / 1440), "day");
+        return x.toLocaleDateString("pt-BR");
+      }
+      const full = (d) => {
+        const x = new Date(d);
+        return isNaN(x)
+          ? d
+          : x.toLocaleString("pt-BR", {
+              dateStyle: "long",
+              timeStyle: "short",
+            });
+      };
+      async function call(path, opt = {}) {
+        let r;
+        try {
+          r = await fetch(API + path, {
+            headers: { "Content-Type": "application/json" },
+            ...opt,
+          });
+        } catch {
+          throw new Error("Não consegui falar com a API (" + API + ").");
+        }
+        const t = await r.text();
+        let j = null;
+        try {
+          j = JSON.parse(t);
+        } catch {}
+        if (!r.ok) throw new Error((j && j.erro) || "Erro " + r.status);
+        return j;
+      }
+      function visual(i) {
+        const c = cat(i.categoria);
+        return `<div class="vis" style="background:linear-gradient(135deg,${c.g[0]},${c.g[1]})">${c.i}${i.foto ? `<img src="${esc(i.foto)}" alt="" loading="lazy">` : ""}</div>`;
+      }
+      function dropBrokenImgs(root) {
+        root
+          .querySelectorAll(".vis img")
+          .forEach((im) =>
+            im.addEventListener("error", () => im.remove(), { once: true }),
+          );
+      }
+
+      /* ===== Estado ===== */
+      let items = [],
+        solics = [],
+        fCat = "",
+        fSt = "",
+        fQ = "",
+        current = null,
+        kind = "achado",
+        novoCat = "outros",
+        segP = "pendente",
+        loaded = false;
+
+      /* ===== Explorar ===== */
+      function stats() {
+        const n = (s) => items.filter((i) => i.status === s).length;
+        $("#stats").innerHTML = [
+          ["achado", "achados"],
+          ["perdido", "procurados"],
+          ["devolvido", "devolvidos"],
+        ]
+          .map(
+            ([s, l]) =>
+              `<div class="stat"><b>${n(s)}</b><span>${l}</span></div>`,
+          )
+          .join("");
+      }
+      function chips() {
+        const base = items.filter((i) =>
+          fSt ? i.status === fSt : i.status !== "devolvido",
+        );
+        const cnt = (c) => base.filter((i) => i.categoria === c).length;
+        $("#chips").innerHTML =
+          `<button class="chip ${!fCat ? "on" : ""}" data-c="">✨ Tudo <small>${base.length}</small></button>` +
+          Object.keys(CATS)
+            .map(
+              (c) =>
+                `<button class="chip ${fCat === c ? "on" : ""}" data-c="${c}">${CATS[c].i} ${CATS[c].l} <small>${cnt(c)}</small></button>`,
+            )
+            .join("");
+        $("#seg").innerHTML = [
+          ["", "Em aberto"],
+          ["achado", "Achados"],
+          ["perdido", "Procurados"],
+          ["devolvido", "Devolvidos"],
+        ]
+          .map(
+            ([v, l]) =>
+              `<button data-s="${v}" class="${fSt === v ? "on" : ""}">${l}</button>`,
+          )
+          .join("");
+      }
+      function filtrados() {
+        const q = fQ.toLowerCase().trim();
+        return items
+          .filter(
+            (i) =>
+              (fSt ? i.status === fSt : i.status !== "devolvido") &&
+              (!fCat || i.categoria === fCat) &&
+              (!q ||
+                [i.nome, i.descricao, i.local, cat(i.categoria).l]
+                  .join(" ")
+                  .toLowerCase()
+                  .includes(q)),
+          )
+          .sort((a, b) => new Date(b.data) - new Date(a.data));
+      }
+      function grid() {
+        const list = filtrados();
+        $("#count").textContent =
+          list.length === 1 ? "1 objeto" : list.length + " objetos";
+        $("#grid").innerHTML = list.length
+          ? list
+              .map(
+                (i, k) => `
+    <article class="card" data-id="${i.id}" style="animation-delay:${Math.min(k, 12) * 35}ms">
+      <div style="position:relative">${visual(i)}<span class="badge ${esc(i.status)}">${ST[i.status] || esc(i.status)}</span></div>
+      <div class="cbody"><h3>${esc(i.nome)}</h3><p>${esc(i.descricao) || "Sem descrição."}</p>
+      <div class="meta"><span>📍 ${esc(i.local)}</span><span>🕒 ${quando(i.data)}</span></div></div>
+    </article>`,
+              )
+              .join("")
+          : `<div class="empty"><div class="big">🕵️</div><h3>Nada por aqui</h3><div>Tente outra busca ou registre o que você perdeu.</div></div>`;
+        dropBrokenImgs($("#grid"));
+      }
+      function renderAll() {
+        stats();
+        chips();
+        grid();
+      }
+      async function load() {
+        $("#grid").innerHTML = Array(6)
+          .fill('<div class="skel"></div>')
+          .join("");
+        try {
+          items = await call("/itens");
+          loaded = true;
+          renderAll();
+        } catch (e) {
+          $("#grid").innerHTML =
+            `<div class="err"><div style="font-size:48px">🔌</div><h3>API fora do ar</h3><div>${esc(e.message)}</div>
+      <p><button class="btn pri" id="retry">Tentar de novo</button></p>
+      <p class="hint">Inicie com <code>python server.py</code> e abra <code>http://localhost:8080</code></p></div>`;
+          $("#count").textContent = "";
+        }
+      }
+
+      /* ===== Detalhe e solicitação ===== */
+      function abrirDetalhe(id) {
+        const i = items.find((x) => x.id == id);
+        if (!i) return;
+        current = i;
+        $("#dDetT").textContent = i.nome;
+        const meu =
+          i.status === "achado"
+            ? "🙋 É meu! Pedir devolução"
+            : i.status === "perdido"
+              ? "🙌 Eu achei isso"
+              : "";
+        $("#dDetB").innerHTML = `${visual(i)}
+    <div><span class="badge static ${esc(i.status)}">${ST[i.status] || esc(i.status)}</span> <span class="who">${esc(cat(i.categoria).l)}</span></div>
+    <p style="margin:0">${esc(i.descricao) || "Sem descrição."}</p>
+    <div class="facts"><div><span>📍</span>${esc(i.local)}</div><div><span>🕒</span>${esc(full(i.data))} · ${quando(i.data)}</div>${i.contato && i.status === "perdido" ? `<div><span>📞</span>${esc(i.contato)}</div>` : ""}</div>
+    ${meu ? `<button class="btn pri" id="goSol">${meu}</button>` : `<p class="hint">Este objeto já foi devolvido ao dono. 🎉</p>`}`;
+        dropBrokenImgs($("#dDetB"));
+        $("#dDet").showModal();
+      }
+      function abrirSolic() {
+        const i = current;
+        if (!i) return;
+        const achado = i.status === "achado";
+        $("#dSolT").textContent = achado ? "Pedir devolução" : "Eu achei isso";
+        $("#solInfo").innerHTML =
+          `${cat(i.categoria).i} <b>${esc(i.nome)}</b> · ${esc(i.local)}`;
+        $("#solMsgL").firstChild.textContent = achado
+          ? "Como comprovar que é seu?"
+          : "Onde e como você encontrou?";
+        const f = $("#fSol");
+        f.reset();
+        const me = store.get("ap_eu", {});
+        f.solicitante.value = me.nome || "";
+        f.contato.value = me.contato || "";
+        $("#dDet").close();
+        $("#dSol").showModal();
+      }
+      $("#fSol").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const f = e.target,
+          b = $("#solGo");
+        b.disabled = true;
+        const d = {
+          item_id: current.id,
+          solicitante: f.solicitante.value,
+          contato: f.contato.value,
+          mensagem: f.mensagem.value,
+        };
+        try {
+          const r = await call("/devolucoes", {
+            method: "POST",
+            body: JSON.stringify(d),
+          });
+          store.set("ap_eu", { nome: d.solicitante, contato: d.contato });
+          store.set("ap_minhas", [...store.get("ap_minhas", []), r.id]);
+          $("#dSol").close();
+          toast("Pedido enviado! Acompanhe em “Minhas solicitações”. ✅");
+        } catch (err) {
+          toast(err.message);
+        }
+        b.disabled = false;
+      });
+
+      /* ===== Registrar ===== */
+      function pickCats() {
+        $("#catpick").innerHTML = Object.entries(CATS)
+          .map(
+            ([k, c]) =>
+              `<button type="button" data-k="${k}" class="${novoCat === k ? "on" : ""}">${c.i} ${c.l}</button>`,
+          )
+          .join("");
+      }
+      function abrirNovo() {
+        const f = $("#fNovo");
+        f.reset();
+        kind = "achado";
+        novoCat = "outros";
+        $$("#kind button").forEach((b) =>
+          b.classList.toggle("on", b.dataset.k === kind),
+        );
+        pickCats();
+        const n = new Date();
+        n.setMinutes(n.getMinutes() - n.getTimezoneOffset());
+        f.data.value = n.toISOString().slice(0, 16);
+        f.contato.value = store.get("ap_eu", {}).contato || "";
+        $("#dNovo").showModal();
+      }
+      $("#kind").addEventListener("click", (e) => {
+        const b = e.target.closest("button");
+        if (!b) return;
+        kind = b.dataset.k;
+        $$("#kind button").forEach((x) => x.classList.toggle("on", x === b));
+      });
+      $("#catpick").addEventListener("click", (e) => {
+        const b = e.target.closest("button");
+        if (!b) return;
+        novoCat = b.dataset.k;
+        pickCats();
+      });
+      $("#fNovo").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const f = e.target,
+          b = $("#novoGo");
+        b.disabled = true;
+        const d = {
+          nome: f.nome.value,
+          categoria: novoCat,
+          status: kind,
+          descricao: f.descricao.value,
+          local: f.local.value,
+          data: new Date(f.data.value).toISOString(),
+          foto: f.foto.value,
+          contato: f.contato.value,
+        };
+        try {
+          await call("/itens", { method: "POST", body: JSON.stringify(d) });
+          $("#dNovo").close();
+          toast(
+            kind === "achado"
+              ? "Obrigado por ajudar! Objeto publicado 🙌"
+              : "Registrado! Vamos torcer para alguém achar 🤞",
+          );
+          fSt = "";
+          fCat = "";
+          fQ = "";
+          $("#q").value = "";
+          await load();
+          tab("explorar");
+        } catch (err) {
+          toast(err.message);
+        }
+        b.disabled = false;
+      });
+
+      /* ===== Solicitações ===== */
+      async function loadSolics() {
+        try {
+          solics = await call("/devolucoes");
+        } catch (e) {
+          solics = [];
+          toast(e.message);
+        }
+      }
+      function solRow(s, painel) {
+        const nome = (s.item && s.item.nome) || "#" + s.item_id,
+          it = items.find((i) => i.id === s.item_id);
+        return `<div class="row"><div class="h"><span class="badge static ${esc(s.status)}">${ST[s.status] || esc(s.status)}</span><b>${it ? cat(it.categoria).i + " " : ""}${esc(nome)}</b><span class="who">${quando(s.data)}</span></div>
+    ${painel ? `<div class="who">👤 ${esc(s.solicitante)} · ${esc(s.contato)}</div>` : ""}
+    <div class="msg">${esc(s.mensagem)}</div>
+    ${painel && s.status === "pendente" ? `<div class="acts"><button class="btn sm ok" data-ap="${s.id}" data-it="${s.item_id}">✓ Aprovar e marcar devolvido</button><button class="btn sm danger" data-rec="${s.id}">Recusar</button></div>` : ""}</div>`;
+      }
+      async function renderMinhas() {
+        await loadSolics();
+        const ids = store.get("ap_minhas", []);
+        const l = solics
+          .filter((s) => ids.includes(s.id))
+          .sort((a, b) => b.id - a.id);
+        $("#minhas").innerHTML = l.length
+          ? l.map((s) => solRow(s, false)).join("")
+          : `<div class="empty"><div class="big">📭</div><h3>Nenhum pedido ainda</h3><div>Quando você pedir a devolução de um objeto, ele aparece aqui.</div></div>`;
+      }
+      async function renderPainel() {
+        await loadSolics();
+        const n = (s) => solics.filter((x) => x.status === s).length;
+        $("#segP").innerHTML = [
+          ["pendente", "Pendentes"],
+          ["aprovada", "Aprovadas"],
+          ["recusada", "Recusadas"],
+        ]
+          .map(
+            ([v, l]) =>
+              `<button data-p="${v}" class="${segP === v ? "on" : ""}">${l} (${n(v)})</button>`,
+          )
+          .join("");
+        const l = solics
+          .filter((s) => s.status === segP)
+          .sort((a, b) => b.id - a.id);
+        $("#painel").innerHTML = l.length
+          ? l.map((s) => solRow(s, true)).join("")
+          : `<div class="empty"><div class="big">🎉</div><h3>Nada por aqui</h3><div>Sem pedidos nesta lista.</div></div>`;
+      }
+      async function decidir(id, itemId, st) {
+        try {
+          await call("/devolucoes/" + id, {
+            method: "PATCH",
+            body: JSON.stringify({ status: st }),
+          });
+          if (st === "aprovada")
+            await call("/itens/" + itemId, {
+              method: "PATCH",
+              body: JSON.stringify({ status: "devolvido" }),
+            });
+          toast(
+            st === "aprovada"
+              ? "Aprovado! Objeto devolvido ✅"
+              : "Pedido recusado",
+          );
+          items = await call("/itens");
+          renderAll();
+          renderPainel();
+        } catch (e) {
+          toast(e.message);
+        }
+      }
+
+      /* ===== Navegação e eventos ===== */
+      function tab(t) {
+        ["explorar", "minhas", "painel"].forEach(
+          (x) => ($("#tab-" + x).hidden = x !== t),
+        );
+        $$("[data-tab]").forEach((b) =>
+          b.classList.toggle("on", b.dataset.tab === t),
+        );
+        window.scrollTo({ top: 0 });
+        if (t === "minhas") renderMinhas();
+        if (t === "painel") renderPainel();
+      }
+      document.addEventListener("click", (e) => {
+        const g = (s) => e.target.closest(s);
+        if (g("[data-tab]")) return tab(g("[data-tab]").dataset.tab);
+        if (g("#btnNovo") || g("#tbNovo")) return abrirNovo();
+        if (g("[data-close]")) return g("dialog").close();
+        if (g("#retry")) return load();
+        if (g("#goSol")) return abrirSolic();
+        if (g("[data-ap]")) {
+          const b = g("[data-ap]");
+          return decidir(+b.dataset.ap, +b.dataset.it, "aprovada");
+        }
+        if (g("[data-rec]"))
+          return decidir(+g("[data-rec]").dataset.rec, 0, "recusada");
+        if (g("[data-p]")) {
+          segP = g("[data-p]").dataset.p;
+          return renderPainel();
+        }
+        if (g("#chips [data-c]")) {
+          fCat = g("[data-c]").dataset.c;
+          return renderAll();
+        }
+        if (g("#seg [data-s]")) {
+          fSt = g("[data-s]").dataset.s;
+          return renderAll();
+        }
+        if (g(".card")) return abrirDetalhe(g(".card").dataset.id);
+        if (e.target.tagName === "DIALOG") e.target.close(); // clique no fundo
+      });
+      $("#q").addEventListener("input", (e) => {
+        fQ = e.target.value;
+        grid();
+      });
+      load();
+    </script>
+  </body>
+</html>
